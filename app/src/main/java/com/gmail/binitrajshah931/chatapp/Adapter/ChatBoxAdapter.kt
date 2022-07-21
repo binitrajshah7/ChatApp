@@ -11,6 +11,12 @@ import com.gmail.binitrajshah931.chatapp.model.Message
 
 class ChatBoxAdapter(MessagesList: List<Message>) :
     RecyclerView.Adapter<ChatBoxAdapter.MyViewHolder>() {
+
+    companion object {
+        private const val ITEM_TYPE_SEND = 0
+        private const val ITEM_TYPE_RECEIVER = 1
+    }
+
     private val MessageList: List<Message>
 
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -29,7 +35,7 @@ class ChatBoxAdapter(MessagesList: List<Message>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item, parent, false)
+            .inflate(R.layout.view_holder_item, parent, false)
         return MyViewHolder(itemView)
     }
 

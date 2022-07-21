@@ -1,6 +1,7 @@
 package com.gmail.binitrajshah931.chatapp
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -35,10 +36,33 @@ class ChatBoxActivity : AppCompatActivity() {
         socket.emit("join", Nickname)
 
         //setting up recycler
-        val MessageList: ArrayList<com.gmail.binitrajshah931.chatapp.model.Message> = ArrayList()
+        val MessageList: ArrayList<com.gmail.binitrajshah931.chatapp.model.Message> = Constants.dummyList()
+
+        Log.d("size: ", "${MessageList.size}")
         val mLayoutManager: RecyclerView.LayoutManager = LinearLayoutManager(applicationContext)
         binding.myRecyclerView.layoutManager = mLayoutManager
         binding.myRecyclerView.itemAnimator = DefaultItemAnimator()
+
+        binding.myRecyclerView.withModels {
+            MessageList.forEachIndexed{position, model->
+
+                // we can use switch case to check for every type of layout
+                // with when() and pass corresponding view models
+                // item is our view_holder_item
+                item {
+
+                    // we need to set id's for data
+                    // which data we need to put in
+                    id(position)
+                    message(model.message)
+                    nickName(model.nickname)
+
+                    // we can use onCLickListener for every view here
+                    // putting variables in data block and assigning it in xml
+                }
+            }
+        }
+
 
         // message send action
         binding.send.setOnClickListener {
@@ -66,33 +90,33 @@ class ChatBoxActivity : AppCompatActivity() {
         }
 
         // for sending and receiving chats
-        socket.on("message") { args ->
-            runOnUiThread {
-                val data = args[0] as JSONObject
-                try {
-                    //extract data from fired event
-                    val nickname = data.getString("senderNickname")
-                    val message = data.getString("message")
-
-                    // make instance of message
-                    val m = com.gmail.binitrajshah931.chatapp.model.Message(nickname, message)
-
-                    //add the message to the messageList
-                    MessageList.add(m)
-
-                    // add the new updated list to the adapter
-                    val chatBoxAdapter = ChatBoxAdapter(MessageList)
-
-                    // notify the adapter to update the recycler view
-                    chatBoxAdapter.notifyDataSetChanged()
-
-                    //set the adapter for the recycler view
-                    binding.myRecyclerView.adapter = chatBoxAdapter
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                }
-            }
-        }
+//        socket.on("message") { args ->
+//            runOnUiThread {
+//                val data = args[0] as JSONObject
+//                try {
+//                    //extract data from fired event
+//                    val nickname = data.getString("senderNickname")
+//                    val message = data.getString("message")
+//
+//                    // make instance of message
+//                    val m = com.gmail.binitrajshah931.chatapp.model.Message(nickname, message)
+//
+//                    //add the message to the messageList
+//                    MessageList.add(m)
+//
+//                    // add the new updated list to the adapter
+//                    val chatBoxAdapter = ChatBoxAdapter(MessageList)
+//
+//                    // notify the adapter to update the recycler view
+//                    chatBoxAdapter.notifyDataSetChanged()
+//
+//                    //set the adapter for the recycler view
+//                    binding.myRecyclerView.adapter = chatBoxAdapter
+//                } catch (e: JSONException) {
+//                    e.printStackTrace()
+//                }
+//            }
+//        }
     }
     override fun onDestroy() {
         super.onDestroy()
